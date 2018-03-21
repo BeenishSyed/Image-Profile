@@ -456,4 +456,46 @@ def makeStPatrickCard2():
   addTextWithStyle(basePic, int(getWidth(basePic)*0.25), int(getHeight(basePic)*.90), "Oh so Lucky!", style,color)
   writePictureTo(basePic, outpath + "//StPatrickCard2.jpg")
   repaint(basePic)
-   
+   #********* Draw Line Function***********
+    def betterBnW(mypic):
+  pixels = getPixels(mypic)
+  for p in pixels:
+    r = getRed(p)      
+    r = r*0.299 #Weight the red value
+    
+    g = getGreen(p)
+    g = g*0.587 #Weight the green value
+    
+    b = getBlue(p)
+    b = b*0.114 #Weight the blue value
+    
+    luminance = (r+g+b) #Find luminance of the weighted red, green    
+    #and blue values.
+    setRed(p, luminance) 
+    setGreen(p, luminance)
+    setBlue(p, luminance)
+  return mypic
+
+def BnWLineImg(pic):
+  pic = betterBnW(pic) # convert picture to black and white
+  picWidth = getWidth(pic)-1
+  picHeight = getHeight(pic)-1
+  for x in range(picWidth):
+    for y in range (picHeight):
+      myPixel = getPixel(pic, x, y)
+      rightPixel = getPixel(pic, x+1, y)
+      bottomPixel = getPixel(pic, x, y+1)
+      myPixelColor = getBlue(myPixel) # Since red green and blue have same value
+      rightPixelColor = getBlue(rightPixel)
+      bottomPixelColor = getBlue(bottomPixel)
+      #if abs(myPixelColor - rightPixelColor)<10 and abs(myPixelColor - bottomPixelColor)<10: # makes inverted image with more black and white lines
+      if abs(myPixelColor - rightPixelColor)>2 and abs(myPixelColor - bottomPixelColor)>2: # makes a sketch like image with more white and black lines
+        setColor(myPixel, black)
+      else:
+        setColor(myPixel, white)
+  writePictureTo(pic, outPath + "\\DrawLine.jpg")
+
+path = "C:\Users\munee_000\Documents\CST 205\Module 3\ImagePortfolio\SourceImages"
+outPath = "C:\Users\munee_000\Documents\CST 205\Module 3\ImagePortfolio\GeneratedImages"
+pic = makePicture(path + "\\CSUMB Landscape.jpg")
+BnWLineImg(pic)
